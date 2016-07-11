@@ -12,8 +12,13 @@ names(dat)
 dim(dat[["pitch"]])
 str(dat[["pitch"]])
 
+## subset At Bats for Mike Trout At Bats
 subTroutAtBats <- subset(dat[["atbat"]], batter_name == "Mike Trout")
+
+## merge Mike Trout At Bats with all pitches for Pitch F/X variables?
 subTroutCombo <- merge(subTroutAtBats, dat[["pitch"]], by= "play_guid")
+
+## how can find add Batter ID to all pitches?
 
 # print some sample reports for comparisonswrite.csv(subTroutCombo, file="subTroutCombo.csv")
 write.csv(subTroutCombo, file="subTroutCombo.csv")
