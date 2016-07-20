@@ -10,7 +10,9 @@ names(dat)
 
 ## take a look
 dim(dat[["pitch"]])
+dim(dat$atbat)
 str(dat[["pitch"]])
+str(dat$pitch)
 
 ## subset At Bats for Mike Trout At Bats
 subTroutAtBats <- subset(dat[["atbat"]], batter_name == "Mike Trout")
@@ -25,6 +27,29 @@ write.csv(subTroutCombo, file="subTroutCombo.csv")
 write.csv(subTroutAtBats, file="subTroutAtBats.csv")
 write.csv((dat[["atbat"]]), file = "atbat.csv")
 write.csv((dat[["pitch"]]), file = "pitch.csv")
+
+#exploratory data analysis
+# adding ggplot2 functions to customize animateFX() output won't work, but
+# you can pass a list to the layer argument like this:
+x <- list(
+    facet_grid(pitcher_name ~ stand, labeller = label_both), 
+    theme_bw(), 
+    coord_equal()
+)
+animateFX(pitches, layer = x)
+
+#more
+animateFX(pitches, avg.by = "pitch_types", layer = x)
+
+# even more
+strikes <- subset(dat[['pitch']], des == "Called Strike")
+strikeFX(strikes, geom = "tile") + 
+    facet_grid(pitch_type ~ des) +
+    coord_equal() +
+    theme_bw() +
+    viridis::scale_fill_viridis()
+
+
 
 
 db <- src_sqlite("pitchfx.sqlite3", create = T)
