@@ -3,38 +3,34 @@ library(pitchRx)
 library(dplyr)
 
 ## Get MLB data for a day
-dat <- scrape(start = "2016-07-01", end = "2016-07-05")
+dat <- scrape(start = "2016-07-02", end = "2016-07-02")
 
 ## 5 data frames are created
 names(dat)
 
-<<<<<<< HEAD
-## If loaded properly, you should have 4478 obs. of  49 variables
+## If loaded properly, you should have 4478 obs. of 49 variables
 dim(dat$pitch)
-=======
 
-# EDA: join pitch and at_bat data
+# EDA: join pitch and at_bat data. dplyr uses table data frames so convert anyway.
 pitch <- tbl_df(dat$pitch)
 atbat <- tbl_df(dat$atbat)
 
-atbat_sub <- atbat %>%
-    filter(gameday_link == 'gid_2016_07_01_clemlb_tormlb_1') %>%
-    select(gameday_link, num, pitcher, batter, pitcher_name, batter_name)
+## Subset for testing purposes.
+## atbat_sub <- atbat %>%
+    ## filter(gameday_link == 'gid_2016_07_01_clemlb_tormlb_1') %>%
+    ## select(gameday_link, num, pitcher, batter, pitcher_name, batter_name)
 
-pitch %>%
-    select(gameday_link, num, id) %>%
+mypitch <- pitch %>%
+    ## Restrict to specific fields within the pitch data frame.
+    select(des, type, tfs, tfs_zulu, num, id, sz_top, sz_bot, px, pz, pitch_type, count) %>%  
     inner_join(x = ., 
                y = atbat %>%
-                   select(gameday_link, num, pitcher, batter, pitcher_name, batter_name), 
+                   select(num, pitcher, batter, pitcher_name, batter_name, stand, atbat_des, event, inning), 
                by = c('gameday_link', 'num'))
 
 
-
 ## take a look
-dim(dat[["pitch"]])
 dim(dat$atbat)
-str(dat[["pitch"]])
->>>>>>> 38dc4a691c67bc355f0851a10b2278b9df1463b4
 str(dat$pitch)
 
 ## If loaded properly, you should have 1157 obs. of  30 variables
@@ -80,3 +76,7 @@ strikeFX(strikes, geom = "tile") +
 ## Write to database
 db <- src_sqlite("pitchfx.sqlite3", create = T)
 scrape(start = "2016-07-02", end = "2017-07-02", connect = db$con)
+
+## Discussion with Frank Evans
+### stringr - used for keyword searching.  perhaps use a subfunction to recurse.
+### http://rawgit.com/jrbattles/fire-ants-mtgs/master/fire-ants-mtg02.html#1
