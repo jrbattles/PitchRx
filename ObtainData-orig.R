@@ -45,7 +45,7 @@ animateFX(pitches, layer = x)
 animateFX(pitches, avg.by = "pitch_types", layer = x)
 
 # even more
-strikes <- subset(dat[['pitch']], des == "Called Strike")
+strikes <- subset(dat[['pitcher']], des == "Called Strike")
 strikeFX(strikes, geom = "tile") + 
     facet_grid(pitch_type ~ des) +
     coord_equal() +
