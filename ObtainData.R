@@ -22,10 +22,10 @@ atbat <- tbl_df(dat$atbat)
 
 mypitch <- pitch %>%
     ## Restrict to specific fields within the pitch data frame.
-    select(des, type, tfs, tfs_zulu, num, id, sz_top, sz_bot, px, pz, pitch_type, count) %>%  
+    select(gameday_link, des, type, tfs, tfs_zulu, num, id, sz_top, sz_bot, px, pz, pitch_type, count) %>%  
     inner_join(x = ., 
                y = atbat %>%
-                   select(num, pitcher, batter, pitcher_name, batter_name, stand, atbat_des, event, inning), 
+                   select(gameday_link, num, pitcher, batter, pitcher_name, batter_name, stand, atbat_des, event, inning), 
                by = c('gameday_link', 'num'))
 
 
