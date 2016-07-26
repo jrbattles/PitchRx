@@ -25,7 +25,7 @@ mypitch <- pitch %>%
     select(gameday_link, des, type, tfs, tfs_zulu, num, id, sz_top, sz_bot, px, pz, pitch_type, count) %>%  
     inner_join(x = ., 
                y = atbat %>%
-                   select(gameday_link, num, pitcher, batter, pitcher_name, batter_name, stand, atbat_des, event, inning), 
+                   select(gameday_link, num, pitcher, batter, b_height, pitcher_name, batter_name, stand, atbat_des, event, inning), 
                by = c('gameday_link', 'num'))
 
 
@@ -66,7 +66,7 @@ animateFX(pitches, layer = x)
 animateFX(pitches, avg.by = "pitch_types", layer = x)
 
 # even more
-strikes <- subset(dat[['pitch']], des == "Called Strike")
+strikes <- subset(mypitch, des == "Called Strike")
 strikeFX(strikes, geom = "tile") + 
     facet_grid(pitch_type ~ des) +
     coord_equal() +
