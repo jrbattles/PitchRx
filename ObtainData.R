@@ -13,10 +13,6 @@ names(dat)
 pitch <- tbl_df(dat$pitch)
 atbat <- tbl_df(dat$atbat)
 
-atbat_sub <- atbat %>%
-    filter(gameday_link == 'gid_2016_07_01_clemlb_tormlb_1') %>%
-    select(gameday_link, num, pitcher, batter, pitcher_name, batter_name)
-
 pitch %>%
     select(gameday_link, num, id) %>%
     inner_join(x = ., 
