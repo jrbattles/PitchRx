@@ -3,28 +3,13 @@ library(pitchRx)
 library(dplyr)
 
 ## Get MLB data for a day
-dat <- scrape(start = "2016-07-02", end = "2016-07-02")
+dat <- scrape(start = "2016-07-02", end = "2017-07-02")
 
 ## 5 data frames are created
 names(dat)
 
-## If loaded properly, you should have 4478 obs. of 49 variables
+## If loaded properly, you should have 4478 obs. of  49 variables
 dim(dat$pitch)
-
-# EDA: join pitch and at_bat data. dplyr uses table data frames so convert anyway.
-pitch <- tbl_df(dat$pitch)
-atbat <- tbl_df(dat$atbat)
-
-pitch %>%
-    select(gameday_link, num, id) %>%
-    inner_join(x = ., 
-               y = atbat %>%
-                   select(gameday_link, num, pitcher, batter, b_height, pitcher_name, batter_name, stand, atbat_des, event, inning), 
-               by = c('gameday_link', 'num'))
-
-
-## take a look
-dim(dat$atbat)
 str(dat$pitch)
 
 ## If loaded properly, you should have 1157 obs. of  30 variables
@@ -60,7 +45,7 @@ animateFX(pitches, layer = x)
 animateFX(pitches, avg.by = "pitch_types", layer = x)
 
 # even more
-strikes <- subset(mypitch, des == "Called Strike")
+strikes <- subset(dat[['pitcher']], des == "Called Strike")
 strikeFX(strikes, geom = "tile") + 
     facet_grid(pitch_type ~ des) +
     coord_equal() +
@@ -70,7 +55,3 @@ strikeFX(strikes, geom = "tile") +
 ## Write to database
 db <- src_sqlite("pitchfx.sqlite3", create = T)
 scrape(start = "2016-07-02", end = "2017-07-02", connect = db$con)
-
-## Discussion with Frank Evans
-### stringr - used for keyword searching.  perhaps use a subfunction to recurse.
-### http://rawgit.com/jrbattles/fire-ants-mtgs/master/fire-ants-mtg02.html#1
