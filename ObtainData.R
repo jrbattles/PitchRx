@@ -80,7 +80,7 @@ joined %>%
     ungroup() %>%
     ggplot(data = .) +
     # TODO: figure out how stat_ works
-    #stat_density2d(mapping = aes(x = px, y = pz)), agg hitter val instead of just count
+    #stat_density2d(mapping = ), agg hitter val instead of just count
     # TODO: filtering (hits, by batter)
     geom_hex(mapping = aes(x = px, y = pz, color = hitter_val)) +
     geom_rect(mapping = aes(xmin = -0.708, xmax = 0.708, 
