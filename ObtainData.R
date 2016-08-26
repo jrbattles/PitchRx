@@ -106,6 +106,18 @@ strikeFX(subTrout, color = "type", point.alpha = 0.1, adjust = TRUE, contour = T
     theme(legend.position = "right", legend.direction = "vertical") +
     coord_equal() + theme_bw()
 
+## another example with Color Brewer
+library(graphics)
+library(RColorBrewer)
+brewer.pal(11, "RdYlBu")
+buylrd <- c("#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026")
+smoothScatter(subTrout$pz~subTrout$px, nbin=1000, colramp = colorRampPalette(c(buylrd)), nrpoints=Inf, pch="", cex=.7, transformation = function(x) x^.6, col="black", main="Mike Trout - Pitch Locations", xlab="Horizontal Location", ylab="Vertical Location")
+lines(c(0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
+lines(c(-0.708335, -0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
+lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_bot)), col="white", lty="dashed", lwd=2)
+lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_top), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
+
+
 strikeFX(subTrout, geom = "tile") + 
     facet_grid(pitch_type ~ p_throws) +
     coord_equal() +
