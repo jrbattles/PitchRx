@@ -90,6 +90,22 @@ subTrout <- subset(joined, batter == "545361")
 # subset for all successful hits
 subHits <- subset(subTrout, type == "X" & des == "In play, no out" | des =="In play, run(s)")
 
+
+
+## Graphing experiments
+
+## contour map with B, S, X types
+strikeFX(subTrout, color = "type", point.alpha = 0.2, adjust = TRUE, contour = TRUE) + 
+            facet_grid(. ~ p_throws) + 
+            theme(legend.position = "right", legend.direction = "vertical") +
+            coord_equal() + theme_bw()
+
+## contour map
+strikeFX(subTrout, color = "type", point.alpha = 0.1, adjust = TRUE, contour = TRUE) + 
+    facet_grid(pitch_type ~ stand) + 
+    theme(legend.position = "right", legend.direction = "vertical") +
+    coord_equal() + theme_bw()
+
 strikeFX(subTrout, geom = "tile") + 
     facet_grid(pitch_type ~ p_throws) +
     coord_equal() +
