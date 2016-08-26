@@ -5,8 +5,7 @@ library(stringr)
 library(ggplot2)
 
 
-
-# Functions
+# load Quantitative and Qualitative Scoring Functions Functions
 get_quant_score <- function(des) {
     score <- (
         as.integer(str_detect(des, "Called Strike")) * -(1/3) +
@@ -39,20 +38,36 @@ get_qual_score <- function(des) {
     return(score)
 }
 
-## Get MLB data for a day
-dat <- scrape(start = "2016-07-02", end = "2016-07-08")
+## Get MLB data for a a week.
+dat <- scrape(start = "2016-08-14", end = "2016-08-20")
+
+### May need to scrape entire years by subsetting the individual teams.
+
+## 5 data frames are created - atbat, action, pitch, po, runner
+names(dat)
+
+## If loaded properly, pitch data frame should have 28831 obs. of 49 variables
+dim(dat$pitch)
+
+## If loaded properly, atbat data frame should have 7475 obs. of 30 variables
+dim(dat$atbat)
+
+## take a look
+str(dat$atbat)
+str(dat$pitch)
 
 # EDA: join pitch and at_bat data. dplyr uses table data frames so convert anyway.
 pitch <- tbl_df(dat$pitch)
 atbat <- tbl_df(dat$atbat)
 
+# combine
 joined <- pitch %>%
     select(gameday_link, num, des, type, tfs, tfs_zulu, 
            id, sz_top, sz_bot, px, pz, pitch_type, count) %>%
     inner_join(x = ., 
                y = atbat %>%
                    select(gameday_link, num, pitcher, batter, b_height, 
-                          pitcher_name, batter_name, stand, atbat_des, event, inning), 
+                          pitcher_name, p_throws, batter_name, stand, atbat_des, event, inning), 
                by = c('gameday_link', 'num')) %>%
     mutate(quant_score = get_quant_score(des),
            qual_score = get_qual_score(atbat_des) * (type == 'X'),
@@ -62,8 +77,24 @@ joined <- pitch %>%
     #filter(type == 'X', qual_score == 0) %>% 
     #View(.)
 
-hist(filter(joined, type == 'X')$qual_score)
-hist(joined$hitter_val)
+
+## hist(filter(joined, type == 'X')$qual_score)
+## hist(joined$hitter_val)
+
+## There should be 485 unique batters 
+length(unique(joined$batter))
+
+## subset At Bats for Mike Trout At Bats
+subTrout <- subset(joined, batter == "545361")
+
+# subset for all successful hits
+subHits <- subset(subTrout, type == "X" & des == "In play, no out" | des =="In play, run(s)")
+
+strikeFX(subTrout, geom = "tile") + 
+    facet_grid(pitch_type ~ p_throws) +
+    coord_equal() +
+    theme_bw() +
+    viridis::scale_fill_viridis()
 
 joined %>%
     filter(pitch_type == 'CU') %>%
@@ -98,7 +129,7 @@ joined %>%
               num_pitches = n()) %>%
     #filter(num_pitches > 10) %>%
     ggplot(data = .) +
-    geom_tile(mapping = aes(x = pxr, y = pzr, fill = hitter_val)) +
+    geom_tile(mapping = aes(x = pxr, y = pzr, fill = hitter_val))
     
 
 joined %>%
