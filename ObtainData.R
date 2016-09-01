@@ -117,7 +117,55 @@ lines(c(-0.708335, -0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), 
 lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_bot)), col="white", lty="dashed", lwd=2)
 lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_top), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
 
+# Cohen's codebase
+library(wesanderson)
+pal <- wes_palette("Zissou", 100, type = "continuous")
 
+#we are going to want to probably generate all images at once per batter for a given date/game range
+subTrout.SI <- joined %>% filter(batter=="545361",pitch_type=="SI")
+subTrout.CU <- joined %>% filter(batter=="545361",pitch_type=="CU")
+subTrout.CH <- joined %>% filter(batter=="545361",pitch_type=="CH")
+subTrout.SL <- joined %>% filter(batter=="545361",pitch_type=="SL")
+subTrout.FF <- joined %>% filter(batter=="545361",pitch_type=="FF")
+
+#FF
+hv <- data.frame(x = subTrout.FF$px, y = subTrout.FF$pz, z = subTrout.FF$hitter_val)
+hv.grid <- interp(as.data.frame(hv)$x, as.data.frame(hv)$y, as.data.frame(hv)$z)
+hv.grid2 <- expand.grid(x=hv.grid$x, y=hv.grid$y)
+hv.grid2$z <- as.vector(hv.grid$z)
+plot1 <- ggplot(hv.grid2) + aes(x = x, y = y, z = z, fill = z) + geom_tile() + coord_equal() + geom_contour(color = "white", alpha = .3) + scale_fill_gradientn(colors=pal, na.value="white") + theme_bw() + labs(title = "HVal for FF - Trout")
+
+#SLiders
+hv <- data.frame(x = subTrout.SL$px, y = subTrout.SL$pz, z = subTrout.SL$hitter_val)
+hv.grid <- interp(as.data.frame(hv)$x, as.data.frame(hv)$y, as.data.frame(hv)$z)
+hv.grid2 <- expand.grid(x=hv.grid$x, y=hv.grid$y)
+hv.grid2$z <- as.vector(hv.grid$z)
+ggplot(hv.grid2) + aes(x = x, y = y, z = z, fill = z) + geom_tile() + coord_equal() + geom_contour(color = "white", alpha = .3) + scale_fill_gradientn(colors=pal, na.value="white") + theme_bw()
+plot2 <- ggplot(hv.grid2) + aes(x = x, y = y, z = z, fill = z) + geom_tile() + coord_equal() + geom_contour(color = "white", alpha = .3) + scale_fill_gradientn(colors=pal, na.value="white") + theme_bw() + labs(title = "HVal for SL - Trout")
+
+### plotting with grid
+# function for displaying any plot in the grid
+library(grid)
+vplayout <- function(x, y) viewport(layout.pos.row = x, layout.pos.col = y)
+
+#plot1 <- ggplot(mostfatalordered, aes(x = EventType, y = Fatalities)) + geom_bar(stat= "identity", fill = "red", col = "black") + theme(axis.text.x = element_text(size=8, angle=45, hjust=1)) + labs(title = "Total Fatalities by Event Type") + xlab("")
+#plot2 <- ggplot(mostinjordered, aes(x = EventType, y = Injuries)) + geom_bar(stat= "identity", fill = "orange", col = "black") + theme(axis.text.x = element_text(size=8, angle=45, hjust=1)) + labs(title = "Total Injuries by Event Type") + xlab("")
+
+
+grid.newpage()
+pushViewport(viewport(layout = grid.layout(1, 2)))
+print(plot1, vp = vplayout(1, 1))
+print(plot2, vp = vplayout(1, 2))
+
+
+
+
+
+
+
+
+    
+    
 strikeFX(subTrout, geom = "tile") + 
     facet_grid(pitch_type ~ p_throws) +
     coord_equal() +
