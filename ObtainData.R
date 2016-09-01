@@ -117,6 +117,16 @@ lines(c(-0.708335, -0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), 
 lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_bot)), col="white", lty="dashed", lwd=2)
 lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_top), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
 
+## Add Batter's strike zone
+topKzone = mean(subTrout$sz_top)
+botKzone = mean(subTrout$sz_bot) 
+inKzone = -.95
+outKzone = 0.95
+kZone = data.frame(
+    x = c(inKzone, inKzone, outKzone, outKzone, inKzone)
+    , y = c(botKzone, topKzone, topKzone, botKzone, botKzone)
+)
+
 # Cohen's codebase
 library(wesanderson)
 pal <- wes_palette("Zissou", 100, type = "continuous")
