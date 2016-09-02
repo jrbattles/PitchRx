@@ -89,6 +89,8 @@ subTrout <- subset(joined, batter == "545361")
 
 # subset for all successful hits
 subHits <- subset(subTrout, type == "X" & des == "In play, no out" | des =="In play, run(s)")
+# subset for all successful strikes
+subStrikes <- subset(subTrout, type == "S")
 
 
 
@@ -111,7 +113,7 @@ library(graphics)
 library(RColorBrewer)
 brewer.pal(11, "RdYlBu")
 buylrd <- c("#313695", "#4575B4", "#74ADD1", "#ABD9E9", "#E0F3F8", "#FFFFBF", "#FEE090", "#FDAE61", "#F46D43", "#D73027", "#A50026")
-smoothScatter(subTrout$pz~subTrout$px, nbin=1000, colramp = colorRampPalette(c(buylrd)), nrpoints=Inf, pch="", cex=.7, transformation = function(x) x^.6, col="black", main="Mike Trout - Pitch Locations", xlab="Horizontal Location", ylab="Vertical Location")
+smoothScatter(subStrikes$pz~subStrikes$px, nbin=1000, colramp = colorRampPalette(c(buylrd)), nrpoints=Inf, pch="", cex=.7, transformation = function(x) x^.6, col="black", main="Mike Trout - Pitch Locations", xlab="Horizontal Location", ylab="Vertical Location")
 lines(c(0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
 lines(c(-0.708335, -0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_top)), col="white", lty="dashed", lwd=2)
 lines(c(-0.708335, 0.708335), c(mean(subTrout$sz_bot), mean(subTrout$sz_bot)), col="white", lty="dashed", lwd=2)
@@ -127,7 +129,22 @@ kZone = data.frame(
     , y = c(botKzone, topKzone, topKzone, botKzone, botKzone)
 )
 
-# Cohen's codebase
+# Battles - Heat Map Codebase
+p0 <- ggplot() +
+    geom_point(data=subTrout, aes(x=px, y=pz, shape=type, col=pitch_type)) +
+    #facet_grid(. ~ p_throws) +
+    coord_equal() +
+    geom_path(aes(x, y), data = kZone, linetype = 2)
+
+p0 = p0 +
+    xlab("Horizontal Location\n(ft. from center of the plate)") +
+    ylab("Vertical Location\n(ft. from ground)")
+p0
+
+p1 = p0 + scale_linetype_manual(name="", values=c("kzone"=2), labels=c("kzone"="Rulebook K-zone"))
+p1
+
+# Cohen's - HitterVal Codebase
 library(wesanderson)
 pal <- wes_palette("Zissou", 100, type = "continuous")
 
@@ -143,7 +160,31 @@ hv <- data.frame(x = subTrout.FF$px, y = subTrout.FF$pz, z = subTrout.FF$hitter_
 hv.grid <- interp(as.data.frame(hv)$x, as.data.frame(hv)$y, as.data.frame(hv)$z)
 hv.grid2 <- expand.grid(x=hv.grid$x, y=hv.grid$y)
 hv.grid2$z <- as.vector(hv.grid$z)
-plot1 <- ggplot(hv.grid2) + aes(x = x, y = y, z = z, fill = z) + geom_tile() + coord_equal() + geom_contour(color = "white", alpha = .3) + scale_fill_gradientn(colors=pal, na.value="white") + theme_bw() + labs(title = "HVal for FF - Trout")
+
+ggplot(hv.grid2) + aes(x = x, y = y, z = z, fill = z) + geom_tile() + 
+    coord_equal() + geom_contour(color = "white", alpha = .3) + 
+    scale_fill_gradientn(colors=pal, na.value="white") + theme_bw() + 
+    labs(title = "HVal for FF - Trout")
+
+ggplot() +
+    geom_point(data=hv.grid2, aes(x = x, y = y, z = z, fill = z)) +
+    geom_tile() + 
+    coord_equal() + 
+    geom_contour(color = "white", alpha = .3) + 
+    scale_fill_gradientn(colors=pal, na.value="white") + 
+    theme_bw() + 
+    labs(title = "HVal for FF - Trout")
+
+ggplot() +
+    geom_point(data=hv.grid2, aes(x=x, y=y, z = z, fill = z)) +
+    geom_tile() +
+    facet_grid(. ~ stand) +
+    coord_equal() +
+    geom_contour(color = "white", alpha = .3) + 
+    scale_fill_gradientn(colors=pal, na.value="white") + 
+    theme_bw() + 
+    geom_path(aes(x, y), data = kZone)
+
 
 #SLiders
 hv <- data.frame(x = subTrout.SL$px, y = subTrout.SL$pz, z = subTrout.SL$hitter_val)
