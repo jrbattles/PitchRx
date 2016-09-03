@@ -89,8 +89,13 @@ subTrout <- subset(joined, batter == "545361")
 
 # subset for all successful hits
 subHits <- subset(subTrout, type == "X" & des == "In play, no out" | des =="In play, run(s)")
+
 # subset for all successful strikes
 subStrikes <- subset(subTrout, type == "S")
+
+#subset for All Hits and AllBallsInPlay 
+subAllHits <- subset(joined, type == "X" & des == "In play, no out" | des =="In play, run(s)")
+subAllBallsInPlay <- subset(joined, type == "X")
 
 
 
@@ -143,6 +148,19 @@ p0
 
 p1 = p0 + scale_linetype_manual(name="", values=c("kzone"=2), labels=c("kzone"="Rulebook K-zone"))
 p1
+
+## subtract Balls from Call Strikes
+relabel <- function(variable, value) {
+    value <- sub("^R$", "Right-Handed Pitchers", value)
+    sub("^L$", "Left-Handed Pitchers", value)
+}
+
+pitch_label <- c(
+    L = "LHP",
+    R = "RHP"
+)
+strikeFX(subAllBallsInPlay, geom = "raster", density1 = list(type = "X"),
+         density2 = list(quant_score = 1), layer = facet_grid(. ~ p_throws, labeller = labeller(p_throws = pitch_label)))
 
 # Cohen's - HitterVal Codebase
 library(wesanderson)
@@ -330,7 +348,7 @@ animateFX(pitches, layer = x)
 
 #more
 animateFX(pitches, avg.by = "pitch_types", layer = x)
-
+animation::saveHTML(animateFX(pitches, avg.by = "pitch_types", layer = x)) 
 # even more
 strikes <- subset(joined, des == "Called Strike")
 strikeFX(strikes, geom = "tile") + 
