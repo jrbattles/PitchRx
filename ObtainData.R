@@ -347,6 +347,8 @@ x <- list(
 animateFX(pitches, layer = x)
 
 #more
+install.packages("animation")
+library(animation)
 animateFX(pitches, avg.by = "pitch_types", layer = x)
 animation::saveHTML(animateFX(pitches, avg.by = "pitch_types", layer = x)) 
 # even more
