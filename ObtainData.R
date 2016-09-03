@@ -1,6 +1,6 @@
 ## load libraries
-library(pitchRx)
-library(dplyr)
+library(pitchRx)   ## thank you Carson Sievert!!!
+library(dplyr)      ## thank you Hadley Wickham
 library(stringr)
 library(ggplot2)
 
@@ -40,6 +40,16 @@ get_qual_score <- function(des) {
 
 ## Get MLB data for a a week.
 dat <- scrape(start = "2016-08-14", end = "2016-08-20")
+
+### Alternatively, get data for all year for specific team to avoid 200 game scrape limitation
+data(gids, package = "pitchRx")
+head(gids)
+MNaway13 <- gids[grep("2013_06_[0-9]{2}_minmlb*", gids)]
+dat2 <- scrape(game.ids = MNaway13)
+
+### gids is only updated through 2015
+MNaway15 <- gids[grep("2015_[0-9]{2}_[0-9]{2}_minmlb*", gids)]
+dat15 <- scrape(game.ids = MNaway15)
 
 ### May need to scrape entire years by subsetting the individual teams.
 
