@@ -1,5 +1,5 @@
 ## load libraries
-library(pitchRx)   ## thank you Carson Sievert!!!
+library(pitchRx)    ## thank you Carson Sievert!!!
 library(dplyr)      ## thank you Hadley Wickham
 library(stringr)
 library(ggplot2)
