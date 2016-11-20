@@ -25,8 +25,8 @@ get_quant_score <- function(des) {
 get_qual_score <- function(des) {
     score <- (
         as.integer(str_detect(des, "homer")) * 2 +
-            as.integer(str_detect(des, "line")) * 1 +
-            as.integer(str_detect(des, "sharp")) * 1 +
+            as.integer(str_detect(des, "line")) * 1.5 +
+            as.integer(str_detect(des, "sharp")) * 1.5 +
             as.integer(str_detect(des, "grounds")) * -1 +
             as.integer(str_detect(des, "flies")) * -1 +
             as.integer(str_detect(des, "soft")) * -2 +
@@ -37,19 +37,14 @@ get_qual_score <- function(des) {
     )
     return(score)
 }
-
+ 
 # Load data from final month of World Series
 data.fin.month <- scrape(start = "2016-09-25", end = "2016-10-24", connect = my_db1$con)
+#data.season 
 
 pitch16 <- select(tbl(my_db1, "pitch"), gameday_link, num, des, type, tfs, tfs_zulu, id, sz_top, sz_bot, px, pz, pitch_type, count)
 atbat16 <- select(tbl(my_db1, "atbat"), gameday_link, num, pitcher, batter, b_height, pitcher_name, p_throws, batter_name, stand, atbat_des, event, inning, inning_side)
 
-batsTrout <- filter(atbat16, batter == "545361")
-#FBs <- filter(pitch11, pitch_type == "FF" | pitch_type == "FC")
-pitchesTrout <- collect(inner_join(pitch16, batsTrout))
 
-joined <- pitchesTrout %>% mutate(quant_score = get_quant_score(des),
-           qual_score = get_qual_score(atbat_des) * (type == 'X'),
-           hitter_val = quant_score + qual_score)
 
-decisions <- collect(inner_join(pitch, atbat))
+
