@@ -39,7 +39,7 @@ get_qual_score <- function(des) {
 }
 
 ## Get MLB data for a a week.
-dat <- scrape(start = "2016-08-14", end = "2016-08-20")
+dat <- scrape(start = "2016-10-01", end = "2016-10-31")
 
 ### Alternatively, get data for all year for specific team to avoid 200 game scrape limitation
 data(gids, package = "pitchRx")
