@@ -12,6 +12,7 @@ joined <- pitchesTrout %>% mutate(quant_score = get_quant_score(des),
                                   qual_score = get_qual_score(atbat_des) * (type == 'X'),
                                   hitter_val = quant_score + qual_score)
 
+
 # convert to factor variables
 joined$pitch_type <- as.factor(joined$pitch_type) 
 joined$des <- as.factor(joined$des) 
@@ -25,10 +26,12 @@ levels(joined$pitch_type)[levels(joined$pitch_type)=="FT"] <- "SI"
 
 # collect number of pitches observed
 num.pitches <- nrow(joined)
+num.pitches
 
 # subset for all successful hits
 subHits <- subset(joined, type == "X" & des == "In play, no out" | des =="In play, run(s)")
 num.hits <- nrow(subHits)
+num.hits
 
 # subset for all successful strikes
 subStrikes <- subset(joined, type == "S")
