@@ -8,10 +8,15 @@ batsTrout <- filter(atbat16, batter == "545361")
 pitchesTrout <- collect(inner_join(pitch16, batsTrout))
 
 # add new columns for HitterVal
-joined <- pitchesTrout %>% mutate(quant_score = get_quant_score(des),
-                                  qual_score = get_qual_score(atbat_des) * (type == 'X'),
-                                  hitter_val = quant_score + qual_score)
+#joined <- pitchesTrout %>% mutate(quant_score = get_quant_score(des),
+#                                  qual_score = get_qual_score(atbat_des) * (type == 'X'),
+#                                  hitter_val = quant_score + qual_score)
 
+joined <- pitchesTrout %>% mutate(quant_score_des = get_quant_score(des),
+                                   fix_quant_score = fix_quant_score(event) * (des == 'In play, run(s)'),
+                                   quant_score = quant_score_des + fix_quant_score,
+                                   qual_score = get_qual_score(atbat_des) * (type == 'X'),
+                                   hitter_val = quant_score + qual_score)
 
 # convert to factor variables
 joined$pitch_type <- as.factor(joined$pitch_type) 
@@ -45,12 +50,15 @@ pitch_label <- c(
     R = "RHP"
 )
 
-# create Heat Map
+# create Traditional Heat Map
 strikeFX(subAllBallsInPlay, geom = "raster", density1 = list(type = "X"),
          density2 = list(quant_score = 1), layer = facet_grid(pitch_type ~ p_throws, labeller = labeller(p_throws = pitch_label)))
 
 strikeFX(subAllBallsInPlay, geom = "raster", density1 = list(type = "X"),
-         density2 = list(event = "Groundout"), layer = facet_grid(pitch_type ~ p_throws, labeller = labeller(p_throws = pitch_label)))
+         density2 = list(quant_score = 1), layer = facet_grid(. ~ p_throws, labeller = labeller(p_throws = pitch_label)))
+
+#strikeFX(subAllBallsInPlay, geom = "raster", density1 = list(type = "X"),
+#         density2 = list(event = "Groundout"), layer = facet_grid(pitch_type ~ p_throws, labeller = labeller(p_throws = pitch_label)))
 
 ## Add Batter's strike zone
 topKzone = mean(joined$sz_top)

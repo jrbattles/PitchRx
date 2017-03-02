@@ -1,0 +1,35 @@
+---
+title: "Beating the Cubbies."
+author: "Jason Battles"
+date: "November 19, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Background Information
+
+Ben "Zorilla" Zobrist is a man to be reckoned with.  In the final game of the world series, he stepped up to the plate with runners on first and second and one out. He hit a double to left field that scored a runner and gave the Cubs a 7-6 lead. His heroics helped the Cubs seal the game and earned him World Series MVP honors.
+
+
+
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

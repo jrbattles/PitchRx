@@ -5,17 +5,18 @@ library(stringr)
 library(ggplot2)
 
 # load Quantitative and Qualitative Scoring Functions Functions
+# Quant scored in terms of Out (-1) and Hit (1)
 get_quant_score <- function(des) {
     score <- (
         as.integer(str_detect(des, "Called Strike")) * -(1/3) +
         as.integer(str_detect(des, "Foul")) * -(1/3) +
         as.integer(str_detect(des, "In play, run")) * 1.0 +
-        as.integer(str_detect(des, "In play, out")) * 0.0 +
+        as.integer(str_detect(des, "In play, out")) * -1.0 +
         as.integer(str_detect(des, "In play, no out")) * 1.0 +
         as.integer(str_detect(des, "^Ball$")) * 0.25 +
         as.integer(str_detect(des, "Swinging Strike")) * -(1/3) +
         as.integer(str_detect(des, "Hit By Pitch")) * 1.0 +
-        as.integer(str_detect(des, "Ball in Dirt")) * 0.25 +
+        as.integer(str_detect(des, "Ball In Dirt")) * 0.25 +
         as.integer(str_detect(des, "Missed Bunt")) * -(1/3) +
         as.integer(str_detect(des, "Intent Ball")) * 0.25
     )
@@ -36,7 +37,16 @@ get_qual_score <- function(des) {
     )
     return(score)
 }
- 
+
+fix_quant_score <- function(event) {
+    score <- (
+        as.integer(str_detect(event, "Groundout")) * -2 +
+        as.integer(str_detect(event, "Forceout")) * -2 +
+        as.integer(str_detect(event, "Field Error")) * -2 
+    )
+    return(score)
+}
+
 # Load data from final month of World Series
 #data.fin.month <- scrape(start = "2016-09-25", end = "2016-10-24", connect = my_db1$con)
 #data.season 
